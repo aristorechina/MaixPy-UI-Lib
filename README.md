@@ -8,6 +8,22 @@
 
 ---
 
+## 🖼️功能展示
+
+以下画面均截取自本项目的 `main.py`
+
+![button](https://raw.githubusercontent.com/aristorechina/MaixPy-UI-Lib/main/pics/button.jpg)
+
+![switch](https://raw.githubusercontent.com/aristorechina/MaixPy-UI-Lib/main/pics/switch.jpg)
+
+![slider](https://raw.githubusercontent.com/aristorechina/MaixPy-UI-Lib/main/pics/slider.jpg)
+
+![radiobutton](https://raw.githubusercontent.com/aristorechina/MaixPy-UI-Lib/main/pics/radiobutton.jpg)
+
+![checkbox](https://raw.githubusercontent.com/aristorechina/MaixPy-UI-Lib/main/pics/checkbox.jpg)
+
+---
+
 ## 📦 安装
 
 将仓库下的 `ui.py` 与程序置于同一目录下即可。
@@ -346,7 +362,7 @@ while not app.need_exit():
 
 ---
 
-### 5. 单选按钮 (RadioButton)
+### 5. 单选框 (RadioButton)
 
 允许用户从一组互斥的选项中只选择一项。
 
