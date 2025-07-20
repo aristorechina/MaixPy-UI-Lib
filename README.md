@@ -442,3 +442,73 @@ while not app.need_exit():
 | `disp` | `display` | 显示屏实例。**必需**。 | - |
 | `default_value` | `any` | 初始选中的单选按钮的 `value`。 | `None` |
 | `callback` | `function` | 选项改变时调用的函数，传入被选中项的 `value`。| `None` |
+
+---
+
+### 6. 分辨率适配器 (ResolutionAdapter)
+
+一个辅助工具类，用于自动适配不同分辨率的屏幕，以保持UI布局的一致性。
+
+#### 使用方式
+
+1.  创建一个 `ResolutionAdapter` 实例，并指定目标屏幕尺寸和可选的设计基础分辨率。
+2.  基于您的设计基础分辨率，定义组件的原始 `rect`、`position` 等参数。
+3.  调用 `adapter.scale_rect()` 等方法，将原始参数转换为适配后的值。
+4.  使用转换后的值来创建您的UI组件。
+
+#### 示例
+
+```python
+from maix import display, camera, app, touchscreen
+from ui import Button, ButtonManager, ResolutionAdapter
+import time
+
+# 1. 初始化硬件
+disp = display.Display()
+ts = touchscreen.TouchScreen()
+# cam = camera.Camera(640,480)
+cam = camera.Camera(320,240)
+
+# 2. 创建分辨率适配器，并明确指定我们的设计是基于 640x480 的
+adapter = ResolutionAdapter(
+    display_width=cam.width(), 
+    display_height=cam.height(),
+    base_width=640,
+    base_height=480
+)
+
+# 3. 基于 640x480 的画布来定义组件参数
+original_rect = [160, 200, 320, 80]
+original_font_scale = 3.0 
+
+# 4. 使用适配器转换参数
+scaled_rect = adapter.scale_rect(original_rect)
+scaled_font_size = adapter.scale_value(original_font_scale) 
+
+# 5. 使用缩放后的值创建组件
+btn_manager = ButtonManager(ts, disp)
+adapted_button = Button(
+    rect=scaled_rect,
+    label="Big Button",
+    text_scale=scaled_font_size,
+    callback=lambda: print("Adapted button clicked!")
+)
+btn_manager.add_button(adapted_button)
+
+# 6. 主循环
+print("ResolutionAdapter example running (640x480 base).")
+while not app.need_exit():
+    img = cam.read()
+    btn_manager.handle_events(img)
+    disp.show(img)
+    time.sleep(0.02)
+```
+
+#### `ResolutionAdapter` 构造函数参数详解
+
+|       参数       | 类型  |               描述               | 默认值 |
+| :--------------: | :---: | :------------------------------: | :----: |
+| `display_width`  | `int` | 目标显示屏的实际宽度。**必需**。 |   -    |
+| `display_height` | `int` | 目标显示屏的实际高度。**必需**。 |   -    |
+|   `base_width`   | `int` | 您进行UI设计所基于的“画布”宽度。 | `320`  |
+|  `base_height`   | `int` | 您进行UI设计所基于的“画布”高度。 | `240`  |

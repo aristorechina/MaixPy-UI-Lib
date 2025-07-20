@@ -23,6 +23,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
+CHANGELOG
+================================================
+
+Version 1.0 (Jul 20, 2025)
+-------------------------------------------------
+- Currently implemented components: Button, Slider, Switch, Checkbox, RadioButton
+
+Version 1.1 (Jul 20, 2025)
+-------------------------------------------------
+- Add a ResolutionAdapter to achieve UI adaptation for different resolutions (implemented by @levi_jia)
+
+Version 1.2 (Jul 20, 2025)
+-------------------------------------------------
+- ResolutionAdapter adds the functionality to customize the base resolution (default remains 320*240).
+- Updated the README by adding explanations for the ResolutionAdapter.
+- Updated the demo to support ResolutionAdapter.
+
 """
 
 import maix.image as image
@@ -372,11 +389,15 @@ class RadioManager:
 # 6. Resolution Adaptation
 # ==============================================================================
 class ResolutionAdapter:
-    def __init__(self, display_width, display_height):
+    def __init__(self, display_width, display_height, base_width=320, base_height=240):
         self.display_width = display_width
         self.display_height = display_height
-        self.base_width = 320  # 基础分辨率宽度
-        self.base_height = 240  # 基础分辨率高度
+        self.base_width = base_width
+        self.base_height = base_height
+
+        if self.base_width == 0 or self.base_height == 0:
+            raise ValueError("Base width and height cannot be zero.")
+
         self.scale_x = display_width / self.base_width
         self.scale_y = display_height / self.base_height
 
@@ -391,5 +412,4 @@ class ResolutionAdapter:
         return self.scale_position(x, y) + self.scale_size(w, h)
 
     def scale_value(self, value):
-        return int(value * max(self.scale_x, self.scale_y))
-    
+        return value * max(self.scale_x, self.scale_y)
