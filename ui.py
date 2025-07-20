@@ -6,7 +6,7 @@ MaixPy-UI-Lib: A lightweight UI component library for MaixPy
   Version : 1.0
   Date    : 2025-07-20
   Web     : https://www.aristore.top/
-  Repo    : https://github.com/your-username/Maix-Py-UI-Lib # 请替换为您的仓库地址
+  Repo    : https://github.com/aristorechina/Maix-Py-UI-Lib
 --------------------------------------------------------------------------
 
 Copyright 2025 Aristore
