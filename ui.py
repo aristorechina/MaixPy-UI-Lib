@@ -40,6 +40,10 @@ Version 1.2 (Jul 20, 2025)
 - Updated the README by adding explanations for the ResolutionAdapter.
 - Updated the demo to support ResolutionAdapter.
 
+Version 1.3 (Jul 20, 2025)
+-------------------------------------------------
+- Added UIManager to implement the navigation (enter and return) functionality between Pages.
+- The demo has been refactored using UIManager.
 """
 
 import maix.image as image
@@ -119,7 +123,7 @@ class Slider:
         if color is None: return None
         if isinstance(color, tuple):
             if len(color) == 3: return image.Color.from_rgb(color[0], color[1], color[2])
-            else: raise ValueError("颜色元组必须是 3 个元素的 RGB 格式。")
+            else: raise ValueError("颜色元组必须是 3 个元素的 RGB 格式")
         return color
     def __init__(self, rect, scale=1.0, min_val=0, max_val=100, default_val=50, callback=None, label="",
                  track_color=(60, 60, 60), progress_color=(0, 120, 220), handle_color=(255, 255, 255),
@@ -208,7 +212,7 @@ class Switch:
         if color is None: return None
         if isinstance(color, tuple):
             if len(color) == 3: return image.Color.from_rgb(color[0], color[1], color[2])
-            else: raise ValueError("颜色元组必须是 3 个元素的 RGB 格式。")
+            else: raise ValueError("颜色元组必须是 3 个元素的 RGB 格式")
         return color
     def __init__(self, position, scale=1.0, is_on=False, callback=None, on_color=(30, 200, 30), off_color=(100, 100, 100),
                  handle_color=(255, 255, 255), handle_pressed_color=(220, 220, 255), handle_radius_increase=2):
@@ -267,7 +271,7 @@ class Checkbox:
         if color is None: return None
         if isinstance(color, tuple):
             if len(color) == 3: return image.Color.from_rgb(color[0], color[1], color[2])
-            else: raise ValueError("颜色元组必须是 3 个元素的 RGB 格式。")
+            else: raise ValueError("颜色元组必须是 3 个元素的 RGB 格式")
         return color
     def __init__(self, position, label, scale=1.0, is_checked=False, callback=None, box_color=(200, 200, 200),
                  box_checked_color=(0, 120, 220), check_color=(255, 255, 255), text_color=(200, 200, 200), box_thickness=2):
@@ -331,7 +335,7 @@ class RadioButton:
         if color is None: return None
         if isinstance(color, tuple):
             if len(color) == 3: return image.Color.from_rgb(color[0], color[1], color[2])
-            else: raise ValueError("颜色元组必须是 3 个元素的 RGB 格式。")
+            else: raise ValueError("颜色元组必须是 3 个元素的 RGB 格式")
         return color
     def __init__(self, position, label, value, scale=1.0, circle_color=(200, 200, 200), circle_selected_color=(0, 120, 220),
                  dot_color=(255, 255, 255), text_color=(200, 200, 200), circle_thickness=2):
@@ -394,22 +398,40 @@ class ResolutionAdapter:
         self.display_height = display_height
         self.base_width = base_width
         self.base_height = base_height
-
-        if self.base_width == 0 or self.base_height == 0:
-            raise ValueError("Base width and height cannot be zero.")
-
+        if self.base_width == 0 or self.base_height == 0: raise ValueError("基础宽度和高度不能为零")
         self.scale_x = display_width / self.base_width
         self.scale_y = display_height / self.base_height
-
-    def scale_position(self, x, y):
-        return int(x * self.scale_x), int(y * self.scale_y)
-
-    def scale_size(self, width, height):
-        return int(width * self.scale_x), int(height * self.scale_y)
-
+    def scale_position(self, x, y): return int(x * self.scale_x), int(y * self.scale_y)
+    def scale_size(self, width, height): return int(width * self.scale_x), int(height * self.scale_y)
     def scale_rect(self, rect):
         x, y, w, h = rect
         return self.scale_position(x, y) + self.scale_size(w, h)
+    def scale_value(self, value): return value * max(self.scale_x, self.scale_y)
 
-    def scale_value(self, value):
-        return value * max(self.scale_x, self.scale_y)
+# ==============================================================================
+# 7. Page and UIManager
+# ==============================================================================
+class Page:
+    def __init__(self, ui_manager): self.ui_manager = ui_manager
+    def on_enter(self): pass
+    def on_exit(self): pass
+    def update(self, img: image.Image): raise NotImplementedError("每个页面都必须实现 update 方法")
+
+class UIManager:
+    def __init__(self): self.page_stack = []
+    def get_current_page(self): return self.page_stack[-1] if self.page_stack else None
+    def push(self, page: Page):
+        current_page = self.get_current_page()
+        if current_page: current_page.on_exit()       
+        self.page_stack.append(page)
+        page.on_enter()
+    def pop(self):
+        if not self.page_stack: return None
+        popped_page = self.page_stack.pop()
+        popped_page.on_exit()
+        current_page = self.get_current_page()
+        if current_page: current_page.on_enter()
+        return popped_page
+    def update(self, img: image.Image):
+        current_page = self.get_current_page()
+        if current_page: current_page.update(img)
