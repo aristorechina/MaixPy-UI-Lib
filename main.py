@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+__author__ = 'Aristore'
+
 from maix import display, camera, app, image, touchscreen
 from ui import (Button, ButtonManager, Slider, SliderManager,
                 Switch, SwitchManager, Checkbox, CheckboxManager,
