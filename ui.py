@@ -367,3 +367,29 @@ class RadioManager:
                 if r.click_armed and self._is_in_rect(x, y, self.disp_rects[r.value]): self._select_radio(r.value)
                 r.click_armed = False
         for r in self.radios: r.draw(img)
+        
+# ==============================================================================
+# 6. Resolution Adaptation
+# ==============================================================================
+class ResolutionAdapter:
+    def __init__(self, display_width, display_height):
+        self.display_width = display_width
+        self.display_height = display_height
+        self.base_width = 320  # 基础分辨率宽度
+        self.base_height = 240  # 基础分辨率高度
+        self.scale_x = display_width / self.base_width
+        self.scale_y = display_height / self.base_height
+
+    def scale_position(self, x, y):
+        return int(x * self.scale_x), int(y * self.scale_y)
+
+    def scale_size(self, width, height):
+        return int(width * self.scale_x), int(height * self.scale_y)
+
+    def scale_rect(self, rect):
+        x, y, w, h = rect
+        return self.scale_position(x, y) + self.scale_size(w, h)
+
+    def scale_value(self, value):
+        return int(value * max(self.scale_x, self.scale_y))
+    
