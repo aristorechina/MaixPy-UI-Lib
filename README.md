@@ -28,6 +28,14 @@
 
 将仓库下的 `ui.py` 与程序置于同一目录下即可。
 
+推荐用法：上传 `ui.py` 到指定文件路径如 `root/modules` 
+在需要使用程序开头添加
+```python
+import sys
+sys.path.append(r'/root/modules')
+```
+然后正常引入
+
 ---
 
 ## 🚀快速上手
@@ -150,6 +158,8 @@ while not app.need_exit():
 
 ### 示例
 ```python
+import sys
+sys.path.append(r'/root/modules')
 from maix import display, camera, app, touchscreen, image
 from ui import Slider, SliderManager
 import time
@@ -256,6 +266,8 @@ while not app.need_exit():
 
 ### 示例
 ```python
+import sys
+sys.path.append(r'/root/modules')
 from maix import display, camera, app, touchscreen, image
 from ui import Switch, SwitchManager
 import time
@@ -357,6 +369,8 @@ while not app.need_exit():
 
 ### 示例
 ```python
+import sys
+sys.path.append(r'/root/modules')
 from maix import display, camera, app, touchscreen, image
 from ui import Checkbox, CheckboxManager
 import time
@@ -464,6 +478,8 @@ while not app.need_exit():
 
 ### 示例
 ```python
+import sys
+sys.path.append(r'/root/modules')
 from maix import display, camera, app, touchscreen, image
 from ui import RadioButton, RadioManager
 import time
@@ -562,6 +578,8 @@ while not app.need_exit():
 
 ### 示例
 ```python
+import sys
+sys.path.append(r'/root/modules')
 from maix import display, camera, app, touchscreen
 from ui import Button, ButtonManager, ResolutionAdapter
 import time
@@ -641,9 +659,9 @@ while not app.need_exit():
 
 ### 示例（其中功能WIFI蓝牙等功能仅供演示，没有实际功能）
 ```python
-from maix import display, camera, app, touchscreen, image
 import sys
 sys.path.append(r'/root/modules')
+from maix import display, camera, app, touchscreen, image
 from ui import Page, UIManager, Button, ButtonManager, Switch, SwitchManager
 import time
 
