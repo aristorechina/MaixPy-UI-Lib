@@ -49,6 +49,8 @@
 
 ### 示例
 ```python
+import sys
+sys.path.append(r'/root/modules')
 from maix import display, camera, app, touchscreen, image
 from ui import Button, ButtonManager
 import time
