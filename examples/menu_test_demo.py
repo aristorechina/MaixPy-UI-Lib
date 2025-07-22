@@ -8,7 +8,7 @@ from typing import Dict, Any, List, Callable
 # Import UI components
 import sys
 sys.path.append(r'/root/moudles')
-from ui_components import (
+from ui import (
     Page, UIManager, Button, ButtonManager,
     ResolutionAdapter
 )
