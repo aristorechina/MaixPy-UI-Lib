@@ -2,9 +2,9 @@
 MaixPy-UI-Lib: A lightweight UI component library for MaixPy
 
 --------------------------------------------------------------------------
-  Author  : Aristore， HYKMAX
-  Version : 2.0
-  Date    : 2025-07-21
+  Author  : Aristore, levi_jia, HYKMAX
+  Version : 2.1
+  Date    : 2025-07-23
   Web     : https://www.aristore.top/
   Repo    : https://github.com/aristorechina/MaixPy-UI-Lib/
 --------------------------------------------------------------------------
@@ -54,7 +54,7 @@ Version 2.0 (Jul 21, 2025)
 
 Version 2.1 (Jul 23, 2025)
 -------------------------------------------------
-- 尝试改进Page为树型结构
+- 尝试改进Page为树型结构（由 @HYKMAX 实现）。
 
 """
 import maix.image as image
