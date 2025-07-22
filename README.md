@@ -640,6 +640,8 @@ while not app.need_exit():
 ### 示例（其中功能WIFI蓝牙等功能仅供演示，没有实际功能）
 ```python
 from maix import display, camera, app, touchscreen, image
+import sys
+sys.path.append(r'/root/modules')
 from ui import Page, UIManager, Button, ButtonManager, Switch, SwitchManager
 import time
 
@@ -810,11 +812,6 @@ class WiFiSettingsPage(Page):
                        scale=1.2, color=title_color)
         img.draw_string(20, 200, "Wi-Fi:", scale=1.5, color=title_color)
         
-        # 显示导航信息
-        nav_info = self.ui_manager.get_navigation_info()
-        img.draw_string(20, 100, f"Depth: {nav_info['page_depth']}", scale=1.2, color=title_color)
-        img.draw_string(20, 120, f"Can go back: {nav_info['can_go_back']}", scale=1.2, color=title_color)
-        
         self.btn_manager.handle_events(img)
         self.switch_manager.handle_events(img)
 
@@ -905,6 +902,7 @@ if __name__ == "__main__":
         ui_manager.update(img)
         disp.show(img)
         time.sleep(0.02)
+
 ```
 
 ### Page 类
