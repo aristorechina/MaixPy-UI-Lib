@@ -3,7 +3,7 @@ sys.path.append(r'/root/moudles')
 from maix import camera, image, touchscreen, display
 import cv2
 import numpy as np
-from ui_components import Page, UIManager, Button, ButtonManager, Slider, SliderManager, Switch, SwitchManager, ResolutionAdapter
+from ui import Page, UIManager, Button, ButtonManager, Slider, SliderManager, Switch, SwitchManager, ResolutionAdapter
 
 class ColorMode:
     HSV = 0
