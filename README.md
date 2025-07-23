@@ -26,7 +26,7 @@
 
 ## 📦 安装
 
-`pip install maixpy_ui`
+`pip install maixpy_ui_lib`
 
 ---
 
