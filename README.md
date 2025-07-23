@@ -1,6 +1,6 @@
 # MaixPy-UI-Lib：一款为 MaixPy 开发的轻量级 UI 组件库
 
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/aristorechina/MaixPy-UI-Lib/blob/main/LICENSE) [![Version](https://img.shields.io/badge/version-2.0-brightgreen.svg)](https://github.com/aristorechina/MaixPy-UI-Lib)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/aristorechina/MaixPy-UI-Lib/blob/main/LICENSE) [![Version](https://img.shields.io/badge/version-2.2-brightgreen.svg)](https://github.com/aristorechina/MaixPy-UI-Lib)
 
 本项目是一款为 MaixPy 开发的轻量级 UI 组件库，遵循 `Apache 2.0` 协议。
 
@@ -26,13 +26,13 @@
 
 ## 📦 安装
 
-将仓库下的 `ui.py` 与程序置于同一目录下即可。
+`pip install maixpy_ui`
 
 ---
 
 ## 🚀快速上手
 
-克隆本仓库并运行整个项目即可了解所有组件的大致作用，仓库中的 `main.py` 即为 demo。
+您可以通过运行仓库中的示例程序 `examples/demo.py` 来快速熟悉本项目的基本功能和使用方法。
 
 ---
 
@@ -52,7 +52,7 @@
 
 ```python
 from maix import display, camera, app, touchscreen, image
-from ui import Button, ButtonManager
+from maixpy_ui import Button, ButtonManager
 import time
 
 # 1. 初始化硬件
@@ -154,7 +154,7 @@ while not app.need_exit():
 #### 示例
 ```python
 from maix import display, camera, app, touchscreen, image
-from ui import Slider, SliderManager
+from maixpy_ui import Slider, SliderManager
 import time
 
 # 1. 初始化硬件
@@ -263,7 +263,7 @@ while not app.need_exit():
 #### 示例
 ```python
 from maix import display, camera, app, touchscreen, image
-from ui import Switch, SwitchManager
+from maixpy_ui import Switch, SwitchManager
 import time
 
 # 1. 初始化硬件
@@ -367,7 +367,7 @@ while not app.need_exit():
 #### 示例
 ```python
 from maix import display, camera, app, touchscreen, image
-from ui import Checkbox, CheckboxManager
+from maixpy_ui import Checkbox, CheckboxManager
 import time
 
 # 1. 初始化硬件
@@ -477,7 +477,7 @@ while not app.need_exit():
 #### 示例
 ```python
 from maix import display, camera, app, touchscreen, image
-from ui import RadioButton, RadioManager
+from maixpy_ui import RadioButton, RadioManager
 import time
 
 # 1. 初始化硬件
@@ -580,7 +580,7 @@ while not app.need_exit():
 
 ```python
 from maix import display, camera, app, touchscreen
-from ui import Button, ButtonManager, ResolutionAdapter
+from maixpy_ui import Button, ButtonManager, ResolutionAdapter
 import time
 
 # 1. 初始化硬件
@@ -644,169 +644,192 @@ while not app.need_exit():
 
 ### 7. 页面与 UI 管理器 (Page and UIManager)
 
-用于构建和管理页面（如主菜单、设置页）。
+用于构建多页面应用，并管理页面间的树型导航。
 
 #### 使用方式
-
-1. 创建一个全局的 UIManager 实例。
-2. 定义继承自 Page 的自定义页面类，并在其中初始化该页面所需的UI组件和逻辑。
-3. 使用 ui_manager.push(Page(...)) 将新页面推入堆栈以进行导航。
-4. 在页面内部，调用 self.ui_manager.pop() 以返回到上一页。
-5. 在主循环中，持续调用 ui_manager.update(img) 来驱动当前活动页面的更新和绘制。
+1.  创建一个全局的 `UIManager` 实例。
+2.  定义继承自 `Page` 的自定义页面类，并在构造函数中为页面命名。
+3.  在父页面中，创建子页面的实例，并使用 `parent.add_child()` 方法来构建页面树。
+4.  使用 `ui_manager.set_root_page()` 设置应用的根页面。
+5.  在页面内部，通过 `self.ui_manager` 调用导航方法，如 `navigate_to_child()`、`navigate_to_parent()`、`navigate_to_root()` 等。
+6.  在主循环中，持续调用 `ui_manager.update(img)` 来驱动当前活动页面的更新和绘制。
 
 #### 示例
 
 ```python
 from maix import display, camera, app, touchscreen, image
-from ui import Page, UIManager, Button, ButtonManager, Switch, SwitchManager
+from maixpy_ui import Page, UIManager, Button, ButtonManager
 import time
 
-# 1. 初始化硬件
+# --------------------------------------------------------------------------
+# 1. 初始化硬件 & 全局资源
+# --------------------------------------------------------------------------
 disp = display.Display()
 ts = touchscreen.TouchScreen()
-cam = camera.Camera()
+screen_w, screen_h = disp.width(), disp.height()
+cam = camera.Camera(screen_w, screen_h)
 
-# 2. 定义一个全局状态字典，用于在页面间共享和持久化数据
-APP_STATE = {
-    'some_setting_on': False,
-}
+# 预创建颜色对象
+COLOR_WHITE = image.Color(255, 255, 255)
+COLOR_GREY = image.Color(150, 150, 150)
+COLOR_GREEN = image.Color(30, 200, 30)
+COLOR_BLUE = image.Color(0, 120, 220)
 
-# 3. 创建 UI 管理器
-ui_manager = UIManager()
-
-# --- 定义页面 ---
-
-# 页面一：主菜单
-class MainPage(Page):
-    def __init__(self, ui_manager):
-        super().__init__(ui_manager)
-        self.btn_manager = ButtonManager(ts, disp)
-        goto_settings_btn = Button(
-            rect=[220, 200, 200, 80],
-            label="Settings",
-            text_scale=2.0,
-            # 每次都创建一个新的设置页面，但页面会从APP_STATE恢复状态
-            callback=lambda: self.ui_manager.push(SettingsPage(self.ui_manager))
-        )
-        self.btn_manager.add_button(goto_settings_btn)
-
-    def on_enter(self): print("Entered Main Page")
-    def on_exit(self): print("Exited Main Page")
-
-    def update(self, img):
-        title_color = image.Color(255, 255, 255)
-        img.draw_string(20, 20, "Main Menu", scale=2.5, color=title_color)
-        self.btn_manager.handle_events(img)
-
-# 页面二：设置页面
-class SettingsPage(Page):
-    def __init__(self, ui_manager):
-        super().__init__(ui_manager)
-        self.btn_manager = ButtonManager(ts, disp)
-        self.switch_manager = SwitchManager(ts, disp)
-
-        # 返回按钮
-        back_btn = Button(
-            rect=[20, 360, 120, 60],
-            label="Back",
-            text_scale=1.8,
-            callback=lambda: self.ui_manager.pop()
-        )
-        self.btn_manager.add_button(back_btn)
-
-        # 开关组件
-        some_setting_switch = Switch(
-            position=[280, 200],
-            scale=2.0,
-            is_on=APP_STATE['some_setting_on'],
-            callback=self.on_setting_change
-        )
-        self.switch_manager.add_switch(some_setting_switch)
-
-    def on_setting_change(self, is_on):
-        """当开关状态改变时，更新全局状态。"""
-        APP_STATE['some_setting_on'] = is_on
-
-    def on_enter(self): print("Entered Settings Page")
-    def on_exit(self): print("Exited Settings Page")
-
-    def update(self, img):
-        title_color = image.Color(255, 255, 255)
-        img.draw_string(20, 20, "Settings", scale=2.5, color=title_color)
-        self.btn_manager.handle_events(img)
-        self.switch_manager.handle_events(img)
-
-# 4. 主程序逻辑
-if __name__ == "__main__":
-    ui_manager.push(MainPage(ui_manager))
-
-    print("Page navigation example running with persistent state.")
-    while not app.need_exit():
+def get_background():
+    if cam:
         img = cam.read()
+        if img: return img
+    return image.new(size=(screen_w, screen_h), color=(10, 20, 30))
+
+# --------------------------------------------------------------------------
+# 2. 定义页面类
+# --------------------------------------------------------------------------
+
+class BasePage(Page):
+    """一个包含通用功能的页面基类，例如绘制调试信息"""
+    def draw_path_info(self, img: image.Image):
+        """在屏幕右下角绘制当前的导航路径"""
+        info = self.ui_manager.get_navigation_info()
+        path_str = " > ".join(info['current_path'])
+        
+        # 计算文本尺寸
+        text_scale = 1.0
+        text_size = image.string_size(path_str, scale=text_scale)
+        
+        # 计算绘制位置（右下角，留出一些边距）
+        padding = 10
+        text_x = screen_w - text_size.width() - padding
+        text_y = screen_h - text_size.height() - padding
+        
+        # 绘制文本
+        img.draw_string(text_x, text_y, path_str, scale=text_scale, color=COLOR_GREY)
+        
+    def update(self, img: image.Image):
+        """子类应该重写此方法，并在末尾调用 super().update(img) 来绘制调试信息"""
+        self.draw_path_info(img)
+
+class PageA1(BasePage):
+    """最深层的页面"""
+    def __init__(self, ui_manager):
+        super().__init__(ui_manager, name="page_a1")
+        self.btn_manager = ButtonManager(ts, disp)
+        self.btn_manager.add_button(Button([40, 150, 400, 80], "Back to Parent (-> Page A)", lambda: self.ui_manager.navigate_to_parent()))
+        self.btn_manager.add_button(Button([40, 250, 400, 80], "Go Back in History", lambda: self.ui_manager.go_back()))
+        self.btn_manager.add_button(Button([40, 350, 400, 80], "Go to Root (Home)", lambda: self.ui_manager.navigate_to_root(), bg_color=COLOR_GREEN))
+
+    def update(self, img):
+        img.draw_string(20, 20, "Page A.1 (Deepest)", scale=2.0, color=COLOR_WHITE)
+        history = self.ui_manager.navigation_history
+        prev_page_name = history[-1].name if history else "None"
+        img.draw_string(20, 80, f"'Go Back' will return to '{prev_page_name}'.", scale=1.2, color=COLOR_GREY)
+        self.btn_manager.handle_events(img)
+        super().update(img) # 调用基类的方法来绘制路径信息
+
+class PageA(BasePage):
+    """中间层页面 A"""
+    def __init__(self, ui_manager):
+        super().__init__(ui_manager, name="page_a")
+        self.btn_manager = ButtonManager(ts, disp)
+        self.btn_manager.add_button(Button([80, 150, 350, 80], "Go to Page A.1", lambda: self.ui_manager.navigate_to_child("page_a1")))
+        self.btn_manager.add_button(Button([20, 400, 250, 80], "Back to Parent", lambda: self.ui_manager.navigate_to_parent()))
+        self.add_child(PageA1(self.ui_manager))
+
+    def update(self, img):
+        img.draw_string(20, 20, "Page A", scale=2.5, color=COLOR_WHITE)
+        self.btn_manager.handle_events(img)
+        super().update(img)
+
+class PageB(BasePage):
+    """中间层页面 B"""
+    def __init__(self, ui_manager):
+        super().__init__(ui_manager, name="page_b")
+        self.btn_manager = ButtonManager(ts, disp)
+        self.btn_manager.add_button(Button([80, 150, 350, 80], "Jump to Page A.1 by Path", lambda: self.ui_manager.navigate_to_path(["page_a", "page_a1"])))
+        self.btn_manager.add_button(Button([20, 400, 250, 80], "Back to Parent", lambda: self.ui_manager.navigate_to_parent()))
+
+    def update(self, img):
+        img.draw_string(20, 20, "Page B", scale=2.5, color=COLOR_WHITE)
+        img.draw_string(20, 80, "From here, we'll jump to A.1.", scale=1.2, color=COLOR_GREY)
+        img.draw_string(20, 110, "This will make 'Go Back' and 'Back to Parent' different on the next page.", scale=1.2, color=COLOR_GREY)
+        self.btn_manager.handle_events(img)
+        super().update(img)
+
+class RootPage(BasePage):
+    """根页面"""
+    def __init__(self, ui_manager):
+        super().__init__(ui_manager, name="root")
+        self.btn_manager = ButtonManager(ts, disp)
+        self.btn_manager.add_button(Button([80, 150, 350, 80], "Path 1: Go to Page A", lambda: self.ui_manager.navigate_to_child("page_a")))
+        self.btn_manager.add_button(Button([80, 300, 350, 80], "Path 2: Go to Page B", lambda: self.ui_manager.navigate_to_child("page_b")))
+        self.add_child(PageA(self.ui_manager))
+        self.add_child(PageB(self.ui_manager))
+
+    def update(self, img):
+        img.draw_string(20, 20, "Root Page (Home)", scale=2.5, color=COLOR_WHITE)
+        img.draw_string(20, 80, "Try both paths to see how 'Go Back' behaves differently.", scale=1.2, color=COLOR_GREY)
+        self.btn_manager.handle_events(img)
+        super().update(img) # 调用基类的方法来绘制路径信息
+
+# --------------------------------------------------------------------------
+# 3. 主程序逻辑
+# --------------------------------------------------------------------------
+if __name__ == "__main__":
+    ui_manager = UIManager()
+    root_page = RootPage(ui_manager)
+    ui_manager.set_root_page(root_page)
+
+    print("Navigation demo with persistent path display running.")
+
+    while not app.need_exit():
+        img = get_background()
         ui_manager.update(img)
         disp.show(img)
         time.sleep(0.02)
 ```
 
 #### `Page` 类
-页面（Page）的基类。所有具体的UI页面都应继承此类。
+页面（Page）的基类，支持树型父子节点结构。所有具体的UI页面都应继承此类。
 
 ##### 构造函数: `__init__`
-| 参数         | 类型        | 描述                            |
-| :----------: | :---------: | :-----------------------------: |
-| `ui_manager` | `UIManager` | 用于页面导航的 UIManager 实例。**必需**。 |
+|    参数    |    类型     |                     描述                      | 默认值 |
+| :--------: | :---------: | :-------------------------------------------: | :----: |
+| `ui_manager` | `UIManager` |      用于页面导航的 UIManager 实例。**必需**。      |   -    |
+|   `name`   |    `str`    | 页面的唯一名称标识符，用于在父页面中查找。 |  `""`  |
 
 ##### 方法 (Methods)
-|     方法      |                        参数                        |                         描述                         |
-| :-----------: | :------------------------------------------------: | :--------------------------------------------------: |
-| `on_enter()`  |                         -                          |  当页面进入视图（被推入堆栈顶）时调用。子类可重写。  |
-|  `on_exit()`  |                         -                          | 当页面离开视图（被从堆栈中弹出）时调用。子类可重写。 |
-| `update(img)` | `img` (`maix.image.Image`): 用于绘制的图像缓冲区。 |  每帧调用的更新和绘制方法。**子类必须重写此方法**。  |
+|        方法         |                      参数                      |                           描述                           |      返回值      |
+| :-----------------: | :--------------------------------------------: | :------------------------------------------------------: | :--------------: |
+| `add_child(page)`   |      `page` (`Page`): 要添加的子页面实例。       |   将一个页面添加为当前页面的子节点，以构建页面树。   |        -         |
+| `remove_child(page)` |     `page` (`Page`): 要移除的子页面实例。      |                     从当前页面移除一个子节点。                     |      `bool`      |
+| `get_child(name)`   |           `name` (`str`): 子页面的名称。           |            根据名称获取子页面，用于自定义导航逻辑。            |  `Page \| None`  |
+|     `on_enter()`      |                       -                        |     当页面进入视图时调用。子类可重写以实现初始化逻辑。     |        -         |
+|      `on_exit()`      |                       -                        |     当页面离开视图时调用。子类可重写以实现清理逻辑。     |        -         |
+| `on_child_enter()`  |      `child` (`Page`): 进入视图的子页面。      |   当此页面的一个子页面进入视图时调用。父页面可重写。   |        -         |
+| `on_child_exit()`   |      `child` (`Page`): 离开视图的子页面。      |   当此页面的一个子页面离开视图时调用。父页面可重写。   |        -         |
+|     `update(img)`     | `img` (`maix.image.Image`): 用于绘制的图像缓冲区。 | 每帧调用的更新和绘制方法。**子类必须重写此方法**。 |        -         |
 
 #### `UIManager` 类
-UI 管理器，用于管理页面（Page）的堆栈式导航。
+UI 管理器，基于树型页面结构提供灵活的导航功能。
 
 ##### 构造函数: `__init__`
-该构造函数没有参数。
+|   参数    |    类型     |             描述             | 默认值 |
+| :-------: | :---------: | :--------------------------: | :----: |
+| `root_page` | `Page | None` | 根页面实例，如果为None则需要后续设置。 | `None` |
 
 ##### 方法 (Methods)
-|         方法         |                        参数                        |                         描述                         |    返回值     |
-| :------------------: | :------------------------------------------------: | :--------------------------------------------------: | :-----------: |
-| `get_current_page()` |                         -                          |                 获取当前活动的页面。                 | `Page | None` |
-|     `push(page)`     |       `page` (`Page`): 要推入的新页面实例。        |   将一个新页面推入堆栈顶部，使其成为当前活动页面。   |       -       |
-|       `pop()`        |                         -                          |     从堆栈顶部弹出一个页面，并返回到前一个页面。     | `Page | None` |
-|    `update(img)`     | `img` (`maix.image.Image`): 用于绘制的图像缓冲区。 | 更新当前活动页面的状态。此方法应在主循环中每帧调用。 |       -       |
-
+|           方法           |                            参数                            |                             描述                             |      返回值      |
+| :----------------------: | :--------------------------------------------------------: | :----------------------------------------------------------: | :--------------: |
+|   `set_root_page(page)`    |            `page` (`Page`): 新的根页面实例。             |           设置或重置UI管理器的根页面，并清空历史。           |        -         |
+|   `get_current_page()`   |                             -                              |                     获取当前活动的页面。                     |  `Page \| None`  |
+| `navigate_to_child(name)`  |               `name` (`str`): 子页面的名称。               |             导航到当前页面的指定名称的子页面。             |      `bool`      |
+|  `navigate_to_parent()`  |                             -                              |                 导航到当前页面的父页面。                 |      `bool`      |
+|   `navigate_to_root()`   |                             -                              |                 直接导航到树的根页面。                 |      `bool`      |
+|  `navigate_to_path(path)`  | `path` (`List[str]`): 从根页面开始的绝对路径。 |                   根据绝对路径导航到指定页面。                   |      `bool`      |
+|       `go_back()`        |                             -                              |             返回到导航历史记录中的前一个页面。             |      `bool`      |
+|    `get_navigation_info()`     |                             -                              | 获取包含当前路径、历史深度等信息的字典，用于调试或显示。 |      `dict`      |
+|      `update(img)`       |     `img` (`maix.image.Image`): 用于绘制的图像缓冲区。     |     更新当前活动页面的状态。此方法应在主循环中每帧调用。     |        -         |
 ---
 
 ## ⚖️许可协议
 
 本项目基于 **Apache License, Version 2.0** 许可。详细信息请参阅代码文件中的许可证说明。
-
----
-
-## 📝更新日志
-
-Version 1.0 (Jul 20, 2025)
-- 当前已实现的组件：Button, Slider, Switch, Checkbox, RadioButton。
-
-Version 1.1 (Jul 20, 2025)
-- 增加了 ResolutionAdapter 以实现对不同分辨率的 UI 适配（由 @levi_jia 实现）。
-
-Version 1.2 (Jul 20, 2025)
-- ResolutionAdapter 增加了自定义基础分辨率的功能（默认仍为 320*240）。
-- 更新了 README，增加了对 ResolutionAdapter 的说明。
-- 更新了 demo 以支持 ResolutionAdapter。
-
-Version 1.3 (Jul 20, 2025)
-- 增加了 UIManager 以实现页面间的导航（进入和返回）功能。
-- 使用 UIManager 重构了 demo。
-
-Version 2.0 (Jul 21, 2025)
-- 进行了大规模代码重构，以提高可读性和可维护性。
-- 为所有类和方法添加了全面的文档字符串，以提供清晰的内联文档。
-- 集成了完整的类型注解。
-- 完善了 README。
-
-Version 2.1 (Jul 23, 2025)
-- 尝试改进Page为树型结构（由 @HYKMAX 实现）。

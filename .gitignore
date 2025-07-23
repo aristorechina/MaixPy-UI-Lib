@@ -1,1 +1,4 @@
 .vscode/
+pyproject.toml
+dist/
+src/maixpy_ui_lib.egg-info/
