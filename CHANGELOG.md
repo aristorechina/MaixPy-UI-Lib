@@ -33,3 +33,6 @@ Version 2.2 (Jul 24, 2025)
 
 Version 2.3 (Jul 24, 2025)
 - 添加离线阈值和多级菜单的示例程序。
+
+Version 2.4 (Jul 24, 2025)
+- UIManager添加remove_page方法。
