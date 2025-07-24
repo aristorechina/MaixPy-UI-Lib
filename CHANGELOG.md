@@ -36,3 +36,4 @@ Version 2.3 (Jul 24, 2025)
 
 Version 2.4 (Jul 24, 2025)
 - UIManager添加remove_page方法。
+- 修复README显示问题。

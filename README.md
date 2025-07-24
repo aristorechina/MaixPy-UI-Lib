@@ -432,8 +432,8 @@ while not app.need_exit():
 |     `position`      |  `Sequence[int]`  |       复选框的左上角坐标 `[x, y]`。**必需**。        |         -         |
 |       `label`       |       `str`       |           复选框旁边的标签文本。**必需**。           |         -         |
 |       `scale`       |      `float`      |                复选框的整体缩放比例。                |       `1.0`       |
-|    `is_checked`     |   `bool | int`    |           复选框的初始状态，True 为选中。            |      `False`      |
-|     `callback`      | `Callable | None` | 状态切换时调用的函数，接收一个布尔值参数表示新状态。 |      `None`       |
+|    `is_checked`     |   `bool \| int`    |           复选框的初始状态，True 为选中。            |      `False`      |
+|     `callback`      | `Callable \| None` | 状态切换时调用的函数，接收一个布尔值参数表示新状态。 |      `None`       |
 |     `box_color`     |  `Sequence[int]`  |            未选中时方框的颜色 (R, G, B)。            | `(200, 200, 200)` |
 | `box_checked_color` |  `Sequence[int]`  |             选中时方框的颜色 (R, G, B)。             |  `(0, 120, 220)`  |
 |    `check_color`    |  `Sequence[int]`  |          选中标记（对勾）的颜色 (R, G, B)。          | `(255, 255, 255)` |
@@ -445,7 +445,7 @@ while not app.need_exit():
 | :-----------------: | :----------------------------------------------------------: | :--------------------------------: |
 |     `toggle()`      |                              -                               | 切换复选框的选中状态，并执行回调。 |
 |     `draw(img)`     |    `img` (`maix.image.Image`): 将要绘制复选框的目标图像。    |     在指定的图像上绘制复选框。     |
-| `handle_event(...)` | `x` (`int`): 触摸点的 X 坐标。<br>`y` (`int`): 触摸点的 Y 坐标。<br>`pressed` (`bool|int`): 触摸屏是否被按下。<br>`img_w` (`int`): 图像缓冲区的宽度。<br>`img_h` (`int`): 图像缓冲区的高度。<br>`disp_w` (`int`): 显示屏的宽度。<br>`disp_h` (`int`): 显示屏的高度。 |   处理触摸事件并更新复选框状态。   |
+| `handle_event(...)` | `x` (`int`): 触摸点的 X 坐标。<br>`y` (`int`): 触摸点的 Y 坐标。<br>`pressed` (`bool\|int`): 触摸屏是否被按下。<br>`img_w` (`int`): 图像缓冲区的宽度。<br>`img_h` (`int`): 图像缓冲区的高度。<br>`disp_w` (`int`): 显示屏的宽度。<br>`disp_h` (`int`): 显示屏的高度。 |   处理触摸事件并更新复选框状态。   |
 
 #### `CheckboxManager` 类
 管理一组复选框的事件处理和绘制。
@@ -555,7 +555,7 @@ while not app.need_exit():
 |      `ts`       | `touchscreen.TouchScreen` |             触摸屏设备实例。**必需**。             |   -    |
 |     `disp`      |     `display.Display`     |              显示设备实例。**必需**。              |   -    |
 | `default_value` |           `any`           |                默认选中的按钮的值。                | `None` |
-|   `callback`    |     `Callable | None`     | 选中项改变时调用的函数，接收新选中项的值作为参数。 | `None` |
+|   `callback`    |     `Callable \| None`     | 选中项改变时调用的函数，接收新选中项的值作为参数。 | `None` |
 
 ##### 方法 (Methods)
 |         方法         |                         参数                         |               描述               |
@@ -640,7 +640,7 @@ while not app.need_exit():
 |   `scale_position(x, y)`    |  `x` (`int`): 原始 X 坐标。<br>`y` (`int`): 原始 Y 坐标。   |      缩放一个坐标点 (x, y)。       | `Sequence[int]` |
 | `scale_size(width, height)` | `width` (`int`): 原始宽度。<br>`height` (`int`): 原始高度。 |   缩放一个尺寸 (width, height)。   | `Sequence[int]` |
 |     `scale_rect(rect)`      |       `rect` (`list[int]`): 原始矩形 `[x, y, w, h]`。       |           缩放一个矩形。           | `Sequence[int]` |
-|    `scale_value(value)`     |              `value` (`int|float`): 原始数值。              | 缩放一个通用数值，如半径、厚度等。 |     `float`     |
+|    `scale_value(value)`     |              `value` (`int\|float`): 原始数值。              | 缩放一个通用数值，如半径、厚度等。 |     `float`     |
 
 ### 7. 页面与 UI 管理器 (Page and UIManager)
 
@@ -818,10 +818,10 @@ UI 管理器，基于树型页面结构提供灵活的导航功能。
 
 ##### 方法 (Methods)
 
-| 方法名称                      | 参数                                       | 描述                                                         | 返回值               |
-|-------------------------------|--------------------------------------------|--------------------------------------------------------------|----------------------|
+| 方法                      | 参数                                       | 描述                                                         | 返回值               |
+|:-----------------------------:|:------------------------------------------:|:------------------------------------------------------------:|:--------------------:|
 | `set_root_page(page)`         | `page` (`Page`): 新的根页面实例。         | 设置或重置UI管理器的根页面，并清空历史。                   | `None`               |
-| `get_current_page()`          | -                                          | 获取当前活动的页面。                                        | `Page | None`        |
+| `get_current_page()`          | -                                          | 获取当前活动的页面。                                        | `Page \| None`        |
 | `navigate_to_child(name)`     | `name` (`str`): 子页面的名称。            | 导航到当前页面的指定名称的子页面。                         | `bool`               |
 | `navigate_to_parent()`        | -                                          | 导航到当前页面的父页面。                                    | `bool`               |
 | `navigate_to_root()`          | -                                          | 直接导航到树的根页面。                                      | `bool`               |
