@@ -9,8 +9,9 @@ from ui import (Button, ButtonManager, Slider, SliderManager,
 print("Starting comprehensive UI demo with consistent feedback...")
 disp = display.Display()
 ts = touchscreen.TouchScreen()
-cam = camera.Camera(320, 240)
-# cam = camera.Camera(640, 480)
+# cam = camera.Camera(300, 300)
+# cam = camera.Camera(320, 240)
+cam = camera.Camera(640, 480)
 current_page = 'home'
 
 disp_w, disp_h = cam.width(), cam.height()      # 获取摄像头实际分辨率
