@@ -30,3 +30,6 @@ Version 2.1 (Jul 23, 2025)
 
 Version 2.2 (Jul 24, 2025)
 - 拆分文件，为上传至PyPI做准备。
+
+Version 2.3 (Jul 24, 2025)
+- 添加离线阈值和多级菜单的示例程序（由 @HYKMAX 实现）。
