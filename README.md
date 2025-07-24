@@ -107,14 +107,14 @@ while not app.need_exit():
 | :----------------: | :--------------------: | :-----------------------------------------: | :---------------: |
 |       `rect`       |    `Sequence[int]`     | 按钮的位置和尺寸 `[x, y, w, h]`。**必需**。 |         -         |
 |      `label`       |         `str`          |        按钮上显示的文本。**必需**。         |         -         |
-|     `callback`     |   `Callable | None`    |    当按钮被点击时调用的函数。**必需**。     |         -         |
-|     `bg_color`     | `Sequence[int] | None` |            背景颜色 (R, G, B)。             |  `(50, 50, 50)`   |
-|  `pressed_color`   | `Sequence[int] | None` |       按下状态的背景颜色 (R, G, B)。        |  `(0, 120, 220)`  |
+|     `callback`     |   `Callable \| None`    |    当按钮被点击时调用的函数。**必需**。     |         -         |
+|     `bg_color`     | `Sequence[int] \| None` |            背景颜色 (R, G, B)。             |  `(50, 50, 50)`   |
+|  `pressed_color`   | `Sequence[int] \| None` |       按下状态的背景颜色 (R, G, B)。        |  `(0, 120, 220)`  |
 |    `text_color`    |    `Sequence[int]`     |            文本颜色 (R, G, B)。             | `(255, 255, 255)` |
 |   `border_color`   |    `Sequence[int]`     |            边框颜色 (R, G, B)。             | `(200, 200, 200)` |
 | `border_thickness` |         `int`          |             边框厚度（像素）。              |        `2`        |
 |    `text_scale`    |        `float`         |              文本的缩放比例。               |       `1.5`       |
-|       `font`       |      `str | None`      |            使用的字体文件路径。             |      `None`       |
+|       `font`       |      `str \| None`      |            使用的字体文件路径。             |      `None`       |
 |     `align_h`      |         `str`          | 水平对齐方式 ('left', 'center', 'right')。  |    `'center'`     |
 |     `align_v`      |         `str`          | 垂直对齐方式 ('top', 'center', 'bottom')。  |    `'center'`     |
 
@@ -122,7 +122,7 @@ while not app.need_exit():
 |        方法         |                             参数                             |             描述             |
 | :-----------------: | :----------------------------------------------------------: | :--------------------------: |
 |     `draw(img)`     |     `img` (`maix.image.Image`): 将要绘制按钮的目标图像。     |   在指定的图像上绘制按钮。   |
-| `handle_event(...)` | `x` (`int`): 触摸点的 X 坐标。<br>`y` (`int`): 触摸点的 Y 坐标。<br>`pressed` (`bool|int`): 触摸屏是否被按下。<br>`img_w` (`int`): 图像缓冲区的宽度。<br>`img_h` (`int`): 图像缓冲区的高度。<br>`disp_w` (`int`): 显示屏的宽度。<br>`disp_h` (`int`): 显示屏的高度。 | 处理触摸事件并更新按钮状态。 |
+| `handle_event(...)` | `x` (`int`): 触摸点的 X 坐标。<br>`y` (`int`): 触摸点的 Y 坐标。<br>`pressed` (`bool\|int`): 触摸屏是否被按下。<br>`img_w` (`int`): 图像缓冲区的宽度。<br>`img_h` (`int`): 图像缓冲区的高度。<br>`disp_w` (`int`): 显示屏的宽度。<br>`disp_h` (`int`): 显示屏的高度。 | 处理触摸事件并更新按钮状态。 |
 
 #### `ButtonManager` 类
 管理一组按钮的事件处理和绘制。
@@ -215,7 +215,7 @@ while not app.need_exit():
 |       `min_val`        |       `int`       |               滑块的最小值。                |        `0`        |
 |       `max_val`        |       `int`       |               滑块的最大值。                |       `100`       |
 |     `default_val`      |       `int`       |               滑块的默认值。                |       `50`        |
-|       `callback`       | `Callable | None` |   值改变时调用的函数，接收新值作为参数。    |      `None`       |
+|       `callback`       | `Callable \| None` |   值改变时调用的函数，接收新值作为参数。    |      `None`       |
 |        `label`         |       `str`       |            滑块上方的标签文本。             |       `""`        |
 |     `track_color`      |  `Sequence[int]`  |          滑轨背景颜色 (R, G, B)。           |  `(60, 60, 60)`   |
 |    `progress_color`    |  `Sequence[int]`  |         滑轨进度条颜色 (R, G, B)。          |  `(0, 120, 220)`  |
@@ -225,13 +225,13 @@ while not app.need_exit():
 |     `label_color`      |  `Sequence[int]`  |          标签文本颜色 (R, G, B)。           | `(200, 200, 200)` |
 |   `tooltip_bg_color`   |  `Sequence[int]`  |       拖动时提示框背景色 (R, G, B)。        |    `(0, 0, 0)`    |
 |  `tooltip_text_color`  |  `Sequence[int]`  |      拖动时提示框文本颜色 (R, G, B)。       | `(255, 255, 255)` |
-| `show_tooltip_on_drag` |   `bool | int`    |        是否在拖动时显示数值提示框。         |      `True`       |
+| `show_tooltip_on_drag` |   `bool \| int`    |        是否在拖动时显示数值提示框。         |      `True`       |
 
 ##### 方法 (Methods)
 |        方法         |                             参数                             |             描述             |
 | :-----------------: | :----------------------------------------------------------: | :--------------------------: |
 |     `draw(img)`     |     `img` (`maix.image.Image`): 将要绘制滑块的目标图像。     |   在指定的图像上绘制滑块。   |
-| `handle_event(...)` | `x` (`int`): 触摸点的 X 坐标。<br>`y` (`int`): 触摸点的 Y 坐标。<br>`pressed` (`bool|int`): 触摸屏是否被按下。<br>`img_w` (`int`): 图像缓冲区的宽度。<br>`img_h` (`int`): 图像缓冲区的高度。<br>`disp_w` (`int`): 显示屏的宽度。<br>`disp_h` (`int`): 显示屏的高度。 | 处理触摸事件并更新滑块状态。 |
+| `handle_event(...)` | `x` (`int`): 触摸点的 X 坐标。<br>`y` (`int`): 触摸点的 Y 坐标。<br>`pressed` (`bool\|int`): 触摸屏是否被按下。<br>`img_w` (`int`): 图像缓冲区的宽度。<br>`img_h` (`int`): 图像缓冲区的高度。<br>`disp_w` (`int`): 显示屏的宽度。<br>`disp_h` (`int`): 显示屏的高度。 | 处理触摸事件并更新滑块状态。 |
 
 #### `SliderManager` 类
 管理一组滑块的事件处理和绘制。
@@ -322,8 +322,8 @@ while not app.need_exit():
 | :----------------------: | :---------------: | :--------------------------------------------------: | :---------------: |
 |        `position`        |  `Sequence[int]`  |        开关的左上角坐标 `[x, y]`。**必需**。         |         -         |
 |         `scale`          |      `float`      |                 开关的整体缩放比例。                 |       `1.0`       |
-|         `is_on`          |   `bool | int`    |             开关的初始状态，True 为开。              |      `False`      |
-|        `callback`        | `Callable | None` | 状态切换时调用的函数，接收一个布尔值参数表示新状态。 |      `None`       |
+|         `is_on`          |   `bool \| int`    |             开关的初始状态，True 为开。              |      `False`      |
+|        `callback`        | `Callable \| None` | 状态切换时调用的函数，接收一个布尔值参数表示新状态。 |      `None`       |
 |        `on_color`        |  `Sequence[int]`  |           开启状态下的背景颜色 (R, G, B)。           |  `(30, 200, 30)`  |
 |       `off_color`        |  `Sequence[int]`  |           关闭状态下的背景颜色 (R, G, B)。           | `(100, 100, 100)` |
 |      `handle_color`      |  `Sequence[int]`  |                手柄的颜色 (R, G, B)。                | `(255, 255, 255)` |
@@ -335,7 +335,7 @@ while not app.need_exit():
 | :-----------------: | :----------------------------------------------------------: | :------------------------------: |
 |     `toggle()`      |                              -                               | 切换开关的状态，并执行回调函数。 |
 |     `draw(img)`     |     `img` (`maix.image.Image`): 将要绘制开关的目标图像。     |     在指定的图像上绘制开关。     |
-| `handle_event(...)` | `x` (`int`): 触摸点的 X 坐标。<br>`y` (`int`): 触摸点的 Y 坐标。<br>`pressed` (`bool|int`): 触摸屏是否被按下。<br>`img_w` (`int`): 图像缓冲区的宽度。<br>`img_h` (`int`): 图像缓冲区的高度。<br>`disp_w` (`int`): 显示屏的宽度。<br>`disp_h` (`int`): 显示屏的高度。 |   处理触摸事件并更新开关状态。   |
+| `handle_event(...)` | `x` (`int`): 触摸点的 X 坐标。<br>`y` (`int`): 触摸点的 Y 坐标。<br>`pressed` (`bool\|int`): 触摸屏是否被按下。<br>`img_w` (`int`): 图像缓冲区的宽度。<br>`img_h` (`int`): 图像缓冲区的高度。<br>`disp_w` (`int`): 显示屏的宽度。<br>`disp_h` (`int`): 显示屏的高度。 |   处理触摸事件并更新开关状态。   |
 
 #### `SwitchManager` 类
 管理一组开关的事件处理和绘制。
