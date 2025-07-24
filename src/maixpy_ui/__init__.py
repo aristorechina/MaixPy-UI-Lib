@@ -30,7 +30,7 @@ from .core import (
     ResolutionAdapter
 )
 
-__version__ = "2.3"
+__version__ = "2.4"
 __author__ = "Aristore, levi_jia, HYKMAX"
 __license__ = "Apache-2.0"
 

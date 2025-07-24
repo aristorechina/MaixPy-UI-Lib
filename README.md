@@ -1,6 +1,6 @@
 # MaixPy-UI-Lib：一款为 MaixPy 开发的轻量级 UI 组件库
 
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/aristorechina/MaixPy-UI-Lib/blob/main/LICENSE) [![Version](https://img.shields.io/badge/version-2.3-brightgreen.svg)](https://github.com/aristorechina/MaixPy-UI-Lib)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/aristorechina/MaixPy-UI-Lib/blob/main/LICENSE) [![Version](https://img.shields.io/badge/version-2.4-brightgreen.svg)](https://github.com/aristorechina/MaixPy-UI-Lib)
 
 本项目是一款为 MaixPy 开发的轻量级 UI 组件库，遵循 `Apache 2.0` 协议。
 
@@ -817,17 +817,24 @@ UI 管理器，基于树型页面结构提供灵活的导航功能。
 | `root_page` | `Page | None` | 根页面实例，如果为None则需要后续设置。 | `None` |
 
 ##### 方法 (Methods)
-|           方法           |                            参数                            |                             描述                             |      返回值      |
-| :----------------------: | :--------------------------------------------------------: | :----------------------------------------------------------: | :--------------: |
-|   `set_root_page(page)`    |            `page` (`Page`): 新的根页面实例。             |           设置或重置UI管理器的根页面，并清空历史。           |        -         |
-|   `get_current_page()`   |                             -                              |                     获取当前活动的页面。                     |  `Page \| None`  |
-| `navigate_to_child(name)`  |               `name` (`str`): 子页面的名称。               |             导航到当前页面的指定名称的子页面。             |      `bool`      |
-|  `navigate_to_parent()`  |                             -                              |                 导航到当前页面的父页面。                 |      `bool`      |
-|   `navigate_to_root()`   |                             -                              |                 直接导航到树的根页面。                 |      `bool`      |
-|  `navigate_to_path(path)`  | `path` (`List[str]`): 从根页面开始的绝对路径。 |                   根据绝对路径导航到指定页面。                   |      `bool`      |
-|       `go_back()`        |                             -                              |             返回到导航历史记录中的前一个页面。             |      `bool`      |
-|    `get_navigation_info()`     |                             -                              | 获取包含当前路径、历史深度等信息的字典，用于调试或显示。 |      `dict`      |
-|      `update(img)`       |     `img` (`maix.image.Image`): 用于绘制的图像缓冲区。     |     更新当前活动页面的状态。此方法应在主循环中每帧调用。     |        -         |
+
+| 方法名称                      | 参数                                       | 描述                                                         | 返回值               |
+|-------------------------------|--------------------------------------------|--------------------------------------------------------------|----------------------|
+| `set_root_page(page)`         | `page` (`Page`): 新的根页面实例。         | 设置或重置UI管理器的根页面，并清空历史。                   | `None`               |
+| `get_current_page()`          | -                                          | 获取当前活动的页面。                                        | `Page | None`        |
+| `navigate_to_child(name)`     | `name` (`str`): 子页面的名称。            | 导航到当前页面的指定名称的子页面。                         | `bool`               |
+| `navigate_to_parent()`        | -                                          | 导航到当前页面的父页面。                                    | `bool`               |
+| `navigate_to_root()`          | -                                          | 直接导航到树的根页面。                                      | `bool`               |
+| `navigate_to_path(path)`      | `path` (`List[str]`): 从根页面开始的绝对路径。 | 根据绝对路径导航到指定页面。                                | `bool`               |
+| `navigate_to_relative_path(path)` | `path` (`List[str]`): 从当前页面开始的相对路径。 | 根据相对路径导航到指定页面。                                | `bool`               |
+| `navigate_to_page(target_page)` | `target_page` (`Page`): 目标页面实例。   | 直接导航到指定页面。                                        | `bool`               |
+| `go_back()`                   | -                                          | 返回到导航历史记录中的前一个页面。                        | `bool`               |
+| `remove_page(page)`           | `page` (`Page`): 要移除的页面实例。      | 移除指定的页面，并从父页面子页面列表中删除。               | `bool`               |
+| `clear_history()`             | -                                          | 清空导航历史记录。                                          | `None`               |
+| `get_current_path()`          | -                                          | 获取当前页面的完整路径。                                    | `List[str]`         |
+| `get_navigation_info()`       | -                                          | 获取包含当前路径、历史深度等信息的字典，用于调试或显示。  | `dict`               |
+| `update(img)`                 | `img` (`maix.image.Image`): 用于绘制的图像缓冲区。 | 更新当前活动页面的状态。此方法应在主循环中每帧调用。      | `None`               |
+
 ---
 
 ## ⚖️许可协议

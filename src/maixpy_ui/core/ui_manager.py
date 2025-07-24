@@ -217,6 +217,30 @@ class UIManager:
         if page:
             page.on_enter()
 
+    def remove_page(self, page: Page) -> bool:
+        """移除指定的页面。
+
+        Args:
+            page (Page): 要移除的页面实例。
+
+        Returns:
+            bool: 如果成功移除则返回 True，否则返回 False。
+        """
+        if page is None or page not in self.navigation_history:
+            return False
+        
+        # 如果当前页面是要移除的页面，首先返回到父页面
+        if self.current_page == page:
+            self.navigate_to_parent()
+        
+        # 如果页面有父页面，则从父页面的子页面列表中移除该页面
+        if page.parent:
+            success = page.parent.remove_child(page)
+            if success:
+                return True
+        
+        return False    
+    
     def get_current_page(self) -> Optional[Page]:
         """获取当前活动的页面。
 
