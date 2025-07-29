@@ -28,6 +28,8 @@
 
 `pip install maixpy-ui-lib`
 
+![install_tutorial](https://raw.githubusercontent.com/aristorechina/MaixPy-UI-Lib/main/pics/install_tutorial.png)
+
 ---
 
 ## 🚀快速上手
